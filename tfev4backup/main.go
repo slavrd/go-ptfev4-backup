@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/slavrd/go-ptfev4-backup/helpers"
+	"github.com/slavrd/go-tfev4-backup/helpers"
 )
 
 var fpass = flag.String("pass", "", "Encryption password for the backup data. Can also be set via TFE_BACKUP_PASSWORD environment variable.")
