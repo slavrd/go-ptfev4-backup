@@ -9,10 +9,10 @@ import (
 	"github.com/slavrd/go-ptfev4-backup/helpers"
 )
 
-var fpass = flag.String("pass", "", "Encryption password for the backup data.")
-var fhost = flag.String("host", "", "Hostname of the ptfe instance. E.g. ptfe.mydomain.com")
-var ftoken = flag.String("token", "", "PTFE backup authorization token.")
-var ffile = flag.String("file", "", "File to read/write PTFE backup.")
+var fpass = flag.String("pass", "", "Encryption password for the backup data. Can also be set via TFE_BACKUP_PASSWORD environment variable.")
+var fhost = flag.String("host", "", "Hostname of the tfe instance. E.g. tfe.mydomain.com. Can also be set via TFE_HOSTNAME environment variable.")
+var ftoken = flag.String("token", "", "TFE backup authorization token. Can also be set via TFE_BACKUP_TOKEN environment variable.")
+var ffile = flag.String("file", "", "File to read/write TFE backup. Can also be set via TFE_BACKUP_FILE environment variable.")
 
 func main() {
 
@@ -36,7 +36,7 @@ func main() {
 
 		defer f.Close()
 
-		err = helpers.PtfeBackup(host, token, pass, f)
+		err = helpers.TfeBackup(host, token, pass, f)
 		if err != nil {
 			log.Fatalf("error making backup: %v", err)
 		}
@@ -51,7 +51,7 @@ func main() {
 			log.Fatalf("error opening backup: %v", err)
 		}
 		defer f.Close()
-		err = helpers.PtfeRestore(host, token, pass, f)
+		err = helpers.TfeRestore(host, token, pass, f)
 		if err != nil {
 			log.Fatalf("error restoring backup: %v", err)
 		}
@@ -77,8 +77,8 @@ func validateInput() (host, token, pass, file string, err error) {
 
 	if *fpass != "" {
 		pass = *fpass
-	} else if os.Getenv("PTFE_BACKUP_PASSWORD") != "" {
-		pass = os.Getenv("PTFE_BACKUP_PASSWORD")
+	} else if os.Getenv("TFE_BACKUP_PASSWORD") != "" {
+		pass = os.Getenv("TFE_BACKUP_PASSWORD")
 	} else {
 		log.Printf("encryption password was not provided.")
 		isErr = true
@@ -86,28 +86,28 @@ func validateInput() (host, token, pass, file string, err error) {
 
 	if *fhost != "" {
 		host = *fhost
-	} else if os.Getenv("PTFE_HOSTNAME") != "" {
-		host = os.Getenv("PTFE_HOSTNAME")
+	} else if os.Getenv("TFE_HOSTNAME") != "" {
+		host = os.Getenv("TFE_HOSTNAME")
 	} else {
-		log.Printf("PTFE hostname was not provided.")
+		log.Printf("TFE hostname was not provided.")
 		isErr = true
 	}
 
 	if *ftoken != "" {
 		token = *ftoken
-	} else if os.Getenv("PTFE_BACKUP_TOKEN") != "" {
-		token = os.Getenv("PTFE_BACKUP_TOKEN")
+	} else if os.Getenv("TFE_BACKUP_TOKEN") != "" {
+		token = os.Getenv("TFE_BACKUP_TOKEN")
 	} else {
-		log.Printf("PTFE backup authorization token was not provided.")
+		log.Printf("TFE backup authorization token was not provided.")
 		isErr = true
 	}
 
 	if *ffile != "" {
 		file = *ffile
-	} else if os.Getenv("PTFE_BACKUP_FILE") != "" {
-		file = os.Getenv("PTFE_BACKUP_FILE")
+	} else if os.Getenv("TFE_BACKUP_FILE") != "" {
+		file = os.Getenv("TFE_BACKUP_FILE")
 	} else {
-		log.Printf("file to read/write PTFE backup not provided.")
+		log.Printf("file to read/write TFE backup not provided.")
 		isErr = true
 	}
 
